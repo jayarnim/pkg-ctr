@@ -10,7 +10,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def save(
     obj: nn.Module, 
     path: str,
-):
+) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     
@@ -24,7 +24,7 @@ def save(
 def load(
     cls: nn.Module, 
     path: str, 
-):
+) -> nn.Module:
     path = Path(path)
     checkpoint = torch.load(f=path, map_location=DEVICE, weights_only=False)
     model = cls(**checkpoint["init_args"])
