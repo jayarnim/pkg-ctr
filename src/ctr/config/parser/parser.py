@@ -9,6 +9,5 @@ def parser(cfg):
         model=model(cfg),
         pipeline=pipeline(cfg),
         trainer=trainer(cfg),
-        model_cls=cfg["model"]["name"],
         seed=cfg["seed"],
     )

@@ -11,5 +11,5 @@ class Checkpointer(Callback):
         if trainer.state.is_best:
             self.state_dict = copy.deepcopy(trainer.model.state_dict())
 
-    def on_end(self, trainer):
+    def end(self, trainer):
         trainer.model.load_state_dict(self.state_dict)

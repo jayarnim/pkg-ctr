@@ -1,5 +1,4 @@
 from .split import stratified_split_builder
-from .encoder import encoder
 from .scaler import scaler
 from .dataloader.builder import dataloader_builder
 
@@ -8,15 +7,8 @@ def pipeline_builder(
     X, 
     y,
     cfg, 
-    encoding: list=None,
     scaling: list=None,
 ):
-    if encoding is not None:
-        X = encoder(
-            X=X,
-            cols=encoding,
-        )
-
     split = stratified_split_builder(
         X=X,
         y=y,
