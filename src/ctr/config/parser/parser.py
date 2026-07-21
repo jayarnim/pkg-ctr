@@ -1,13 +1,13 @@
-from ..config.config import Config
+from ..config.config import *
 from .model import model
-from .pipeline import pipeline
+from .datamodule import datamodule
 from .trainer import trainer
 
 
 def parser(cfg):
     return Config(
         model=model(cfg),
-        pipeline=pipeline(cfg),
+        datamodule=datamodule(cfg),
         trainer=trainer(cfg),
         seed=cfg["seed"],
     )

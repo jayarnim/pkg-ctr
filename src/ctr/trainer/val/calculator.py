@@ -3,6 +3,7 @@ from torchmetrics.classification import (
     BinaryROC,
     BinaryAUROC,
 )
+from ..state import State
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -14,7 +15,12 @@ class Calculator(object):
         self.roc = BinaryROC().to(DEVICE)
         self.auroc = BinaryAUROC().to(DEVICE)
 
-    def __call__(self, prob, true, state):
+    def __call__(
+        self, 
+        prob: torch.Tensor, 
+        true: torch.Tensor, 
+        state: State,
+    ) -> None:
         # Youden's J Statistic
         self.roc.reset()
         fpr, tpr, thresholds = self.roc(prob, true)

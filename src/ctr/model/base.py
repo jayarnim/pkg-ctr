@@ -1,8 +1,9 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
+import torch
 import torch.nn as nn
 
 
-class BaseModel(nn.Module):
+class BaseModel(nn.Module, ABC):
     def __init__(self, kwargs):
         super().__init__()
 
@@ -13,5 +14,8 @@ class BaseModel(nn.Module):
         self.init_args = init_args
 
     @abstractmethod
-    def forward(self, X):
-        pass
+    def forward(
+        self, 
+        X: torch.Tensor,
+    ) -> torch.Tensor:
+        raise NotImplementedError

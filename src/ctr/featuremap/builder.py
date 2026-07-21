@@ -1,12 +1,13 @@
-from .featureInfo import FeatureInfo
-from .featureMap import FeatureMap
+from .feature_info import FeatureInfo
+from .feature_map import FeatureMap
+import pandas as pd
 
 
-def feature_map_builder(
-    X,
-    cat_cols=None,
-    num_cols=None, 
-):
+def build_feature_map(
+    X: pd.DataFrame,
+    cat_cols: list=None,
+    num_cols: list=None, 
+) -> FeatureMap:
     categoricals = [
         FeatureInfo(
             name=col,

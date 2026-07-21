@@ -1,6 +1,4 @@
-from ..config.model import (
-    ModelCfg,
-)
+from ..config.model import *
 
 
 def model(cfg):

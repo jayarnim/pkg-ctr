@@ -1,30 +1,12 @@
-from ..config.trainer import (
-    OptimizerCfg,
-    LossCfg,
-    TrnCfg,
-    ValCfg,
-    TrainerCfg,
-)
-
-
-def optimizer(cfg):
-    return OptimizerCfg(
-        name=cfg["optimizer"]["name"],
-        params=cfg["optimizer"].get("params") or dict(),
-    )
-
-
-def loss(cfg):
-    return LossCfg(
-        name=cfg["loss"]["name"],
-        params=cfg["loss"].get("params") or dict(),
-    )
+from ..config.trainer import *
+from ...core.config.parser.criterion import *
+from ...core.config.parser.optimizer import *
 
 
 def trn(cfg):
     return TrnCfg(
         optimizer=optimizer(cfg),
-        loss=loss(cfg),
+        criterion=criterion(cfg),
     )
 
 
@@ -32,12 +14,18 @@ def val(cfg):
     return ValCfg()
 
 
+def early_stopping(cfg):
+    return EarlyStoppingCfg(
+        patience=cfg["early_stopping"]["patience"],
+        delta=cfg["early_stopping"]["delta"],
+        warmup=cfg["early_stopping"]["warmup"],
+    )
+
+
 def trainer(cfg):
     return TrainerCfg(
-        num_epochs=cfg["trainer"]["num_epochs"],
-        patience=cfg["trainer"]["patience"],
-        delta=cfg["trainer"]["delta"],
-        warmup=cfg["trainer"]["warmup"],
+        num_epochs=cfg["num_epochs"],
+        early_stopping=early_stopping(cfg),
         trn=trn(cfg),
         val=val(cfg),
     )

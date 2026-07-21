@@ -1,18 +1,27 @@
 from tqdm import tqdm
 import torch
 import torch.nn as nn
+from ...dataloader import DataLoader
+from ..state import State
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class Predictor(object):
-    def __init__(self, model):
+    def __init__(
+        self, 
+        model: nn.Module,
+    ):
         super().__init__()
         self.model = model.to(DEVICE)
 
     @torch.no_grad()
-    def __call__(self, dataloader, state):
+    def __call__(
+        self, 
+        dataloader: DataLoader, 
+        state: State,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         # evalidation
         self.model.eval()
 
@@ -28,12 +37,17 @@ class Predictor(object):
 
         # start batch loop
         for X, y in tqdm(**kwargs):
+            # to gpu
             X = X.to(DEVICE)
+            y = y.to(DEVICE)
+
+            # prdict
             y_pred = self.model(X)
             y_prob = torch.sigmoid(y_pred)
 
+            # accumulate
             prob_list.extend(y_prob.cpu().tolist())
-            true_list.extend(y.tolist())
+            true_list.extend(y.cpu().tolist())
 
         # list -> tensor
         kwargs = dict(

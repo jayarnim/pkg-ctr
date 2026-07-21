@@ -1,6 +1,6 @@
 from tqdm import tqdm
 import torch
-import torch.nn as nn
+from ..dataloader import DataLoader
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -12,7 +12,10 @@ class Predictor(object):
         self.model = model.to(DEVICE)
 
     @torch.no_grad()
-    def __call__(self, dataloader):
+    def __call__(
+        self, 
+        dataloader: DataLoader,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         # evalidation
         self.model.eval()
 

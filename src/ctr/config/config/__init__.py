@@ -1,6 +1,7 @@
 from . import (
     config,
-    pipeline,
+    dataloader,
+    datamodule,
     trainer,
     model,
 )

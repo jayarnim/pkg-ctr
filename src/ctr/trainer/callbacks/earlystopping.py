@@ -14,18 +14,21 @@ class EarlyStopping(Callback):
         REFERENCE = trainer.state.best_score + self.delta
         IMPROVED = CURRENT_SCORE > REFERENCE
 
-        if IMPROVED:
-            trainer.state.is_best = True
-            trainer.state.best_epoch = CURRENT_EPOCH
-            trainer.state.best_score = CURRENT_SCORE
-            trainer.state.counter = 0
-        
-        else:
+        if CURRENT_EPOCH <= self.warmup:
             trainer.state.is_best = False
+            trainer.state.counter = 0
+            trainer.state.should_stop = False
 
-            if CURRENT_EPOCH <= self.warmup:
-                pass
+        else:
+            if IMPROVED:
+                trainer.state.is_best = True
+                trainer.state.best_epoch = CURRENT_EPOCH
+                trainer.state.best_score = CURRENT_SCORE
+                trainer.state.counter = 0
+                trainer.state.should_stop = False
+        
             else:
+                trainer.state.is_best = False
                 trainer.state.counter += 1
 
         if trainer.state.counter > self.patience:

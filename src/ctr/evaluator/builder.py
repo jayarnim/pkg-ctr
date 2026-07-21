@@ -1,10 +1,13 @@
-import torch
 from .predictor import Predictor
 from .calculator import Calculator
 from .evaluator import Evaluator
+import torch.nn as nn
 
 
-def evaluator_builder(model, threshold):
+def build_evaluator(
+    model: nn.Module, 
+    threshold: float,
+) -> Evaluator:
     kwargs = dict(
         model=model,
     )

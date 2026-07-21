@@ -1,8 +1,13 @@
+from .callbacks.base import Callback
 from .callbacks.manager import CallbackManager
 from .state import State
 from .records import Records
 import torch
-from torch.utils.data.dataloader import DataLoader
+import torch.nn as nn
+from ..dataloader import DataLoader
+from .trn import Engine as TrnEngine
+from .val import Engine as ValEngine
+from typing import Any
 
 
 # device setting
@@ -10,7 +15,14 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class Trainer(object):
-    def __init__(self, model, trn, val, callbacks, num_epochs):
+    def __init__(
+        self, 
+        model: nn.Module, 
+        trn: TrnEngine, 
+        val: ValEngine, 
+        callbacks: list[Callback], 
+        num_epochs: int,
+    ):
         self.model = model.to(DEVICE)
         self.trn = trn
         self.val = val
@@ -24,7 +36,7 @@ class Trainer(object):
         self, 
         trn_loader: DataLoader, 
         val_loader: DataLoader, 
-    ):
+    ) -> dict[str, Any]:
         # BEGIN ==========
         self.callbacks.begin(self)
 

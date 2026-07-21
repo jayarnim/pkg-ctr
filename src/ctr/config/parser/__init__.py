@@ -1,6 +1,7 @@
 from . import (
+    dataloader,
+    datamodule,
     parser,
-    pipeline,
     trainer,
     model,
 )

@@ -1,26 +1,30 @@
-from .trn.builder import trn_builder
-from .val.builder import val_builder
+from .trn import build_trn
+from .val import build_val
 from .callbacks.earlystopping import EarlyStopping
 from .callbacks.logger import Logger
 from .callbacks.checkpointer import Checkpointer
 from .trainer import Trainer
+import torch.nn as nn
 
 
-def trainer_builder(model, cfg):
+def build_trainer(
+    model: nn.Module, 
+    cfg,
+) -> Trainer:
     kwargs = dict(
         model=model,
         cfg=cfg.trn,
     )
-    trn = trn_builder(**kwargs)
+    trn = build_trn(**kwargs)
 
     kwargs = dict(
         model=model,
         cfg=cfg.val,
     )
-    val = val_builder(**kwargs)
+    val = build_val(**kwargs)
 
     callbacks = [
-        EarlyStopping(patience=cfg.patience, delta=cfg.delta, warmup=cfg.warmup),
+        EarlyStopping(**vars(cfg.early_stopping)),
         Logger(),
         Checkpointer(),
     ]

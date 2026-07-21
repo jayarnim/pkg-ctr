@@ -6,6 +6,11 @@ conda env create -f env/environment.yaml
 conda activate ctr
 ```
 
+```py
+# LOAD PKG
+import ctr
+```
+
 ## Implementation Repositories
 
 - Factorization Machine (Rendle, 2010) [`repo`](https://github.com/jayarnim/CTR-FM)

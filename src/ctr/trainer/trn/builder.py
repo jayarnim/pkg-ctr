@@ -1,19 +1,24 @@
-from .criterion.builder import criterion_builder
-from .optimizer.builder import optimizer_builder
+from .criterion import build_criterion
+from .optimizer import build_optimizer
 from .engine import Engine
+import torch.nn as nn
+from ...config.config.trainer import TrnCfg
 
 
-def trn_builder(model, cfg):
+def build_trn(
+    model: nn.Module, 
+    cfg: TrnCfg,
+) -> Engine:
     kwargs = dict(
         params=model.parameters(),
         cfg=cfg.optimizer,
     )
-    optimizer = optimizer_builder(**kwargs)
+    optimizer = build_optimizer(**kwargs)
 
     kwargs = dict(
-        cfg=cfg.loss,
+        cfg=cfg.criterion,
     )
-    criterion = criterion_builder(**kwargs)
+    criterion = build_criterion(**kwargs)
 
     kwargs = dict(
         model=model,

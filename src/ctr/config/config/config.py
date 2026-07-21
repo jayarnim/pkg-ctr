@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from .pipeline import PipelineCfg
+from .datamodule import DataModuleCfg
 from .trainer import TrainerCfg
 from .model import ModelCfg
 
@@ -7,6 +7,6 @@ from .model import ModelCfg
 @dataclass
 class Config:
     model: ModelCfg
-    pipeline: PipelineCfg
+    datamodule: DataModuleCfg
     trainer: TrainerCfg
     seed: int

@@ -1,9 +1,10 @@
 import yaml
 from pathlib import Path
 from .parser.parser import parser
+from .config.config import Config
 
 
-def config_builder(path):
+def build_config(path) -> Config:
     path = Path(path)
 
     kwargs = dict(

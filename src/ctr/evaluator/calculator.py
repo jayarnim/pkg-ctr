@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import torch
 import torch.nn.functional as F
 from torchmetrics.classification import (
     BinaryAccuracy, 
@@ -13,7 +14,10 @@ from torchmetrics.classification import (
 
 
 class Calculator(object):
-    def __init__(self, threshold):
+    def __init__(
+        self, 
+        threshold: float,
+    ):
         super().__init__()
         self.threshold = threshold
         self.accuracy = BinaryAccuracy(threshold=threshold)
@@ -23,7 +27,11 @@ class Calculator(object):
         self.confmat = BinaryConfusionMatrix(threshold=threshold)
         self.auroc = BinaryAUROC()
 
-    def __call__(self, prob, true):
+    def __call__(
+        self, 
+        prob: torch.Tensor, 
+        true: torch.Tensor,
+    ) -> pd.DataFrame:
         self.accuracy.reset()
         self.precision.reset()
         self.recall.reset()
