@@ -1,33 +1,28 @@
-import pandas as pd
 import torch
+from .predictor import Predictor
+from .calculator import Calculator
 
 
 # device setting
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-class Evaluator(object):
+class Engine(object):
     def __init__(self, predictor, calculator):
         super().__init__()
         self.predictor = predictor
         self.calculator = calculator
 
-    def __call__(self, dataloader):
+    def __call__(self, dataloader, state):
         kwargs = dict(
             dataloader=dataloader,
+            state=state,
         )
         prob, true = self.predictor(**kwargs)
-
-        data = dict(
-            prob=prob.cpu().numpy(),
-            true=true.cpu().numpy(),
-        )
-        result = pd.DataFrame(data)
-
+        
         kwargs = dict(
             prob=prob,
             true=true,
+            state=state,
         )
-        metrics_sheet = self.calculator(**kwargs)
-
-        return result, metrics_sheet
+        self.calculator(**kwargs)

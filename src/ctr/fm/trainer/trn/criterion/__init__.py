@@ -1,4 +1,4 @@
 from . import (
-    loss,
+    criterion,
     builder,
 )

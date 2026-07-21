@@ -1,34 +1,35 @@
 from dataclasses import dataclass
-from typing import Literal
+from ...const import OPTIMIZERS, LOSS_FN
 
 
 @dataclass
 class OptimizerCfg:
-    name: Literal["adagrad", "adam", "adamw"]
+    name: OPTIMIZERS
     params: dict
 
 
 @dataclass
 class LossCfg:
-    name: Literal["fdd"]
+    name: LOSS_FN
     params: dict
 
 
 @dataclass
-class EngineCfg:
+class TrnCfg:
     optimizer: OptimizerCfg
     loss: LossCfg
 
 
 @dataclass
-class MonitorCfg:
-    delta: float
-    patience: int
-    warmup: int
+class ValCfg:
+    pass
 
 
 @dataclass
 class TrainerCfg:
     num_epochs: int
-    engine: EngineCfg
-    monitor: MonitorCfg
+    patience: int
+    delta: float
+    warmup: int
+    trn: TrnCfg
+    val: ValCfg

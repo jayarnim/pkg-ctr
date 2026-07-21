@@ -1,6 +1,6 @@
 from .bce import BinaryCrossEntropy
 
 
-LOSS_FN_REGISTRY = {
+CRITERION_REGISTRY = {
     "bce": BinaryCrossEntropy,
 }

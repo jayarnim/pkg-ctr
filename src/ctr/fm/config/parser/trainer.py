@@ -1,8 +1,8 @@
 from ..config.trainer import (
     OptimizerCfg,
     LossCfg,
-    EngineCfg,
-    MonitorCfg,
+    TrnCfg,
+    ValCfg,
     TrainerCfg,
 )
 
@@ -21,24 +21,23 @@ def loss(cfg):
     )
 
 
-def engine(cfg):
-    return EngineCfg(
+def trn(cfg):
+    return TrnCfg(
         optimizer=optimizer(cfg),
         loss=loss(cfg),
     )
 
 
-def monitor(cfg):
-    return MonitorCfg(
-        delta=cfg["monitor"]["delta"],
-        patience=cfg["monitor"]["patience"],
-        warmup=cfg["monitor"]["warmup"],
-    )
+def val(cfg):
+    return ValCfg()
 
 
 def trainer(cfg):
     return TrainerCfg(
         num_epochs=cfg["trainer"]["num_epochs"],
-        engine=engine(cfg),
-        monitor=monitor(cfg),
+        patience=cfg["trainer"]["patience"],
+        delta=cfg["trainer"]["delta"],
+        warmup=cfg["trainer"]["warmup"],
+        trn=trn(cfg),
+        val=val(cfg),
     )

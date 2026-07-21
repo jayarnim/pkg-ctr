@@ -1,13 +1,9 @@
-import torch.nn as nn
 from .optimizer.registry import OPTIMIZER_REGISTRY
 
 
-def optimizer_builder(
-    model: nn.Module,
-    cfg,
-):
+def optimizer_builder(params, cfg):
     kwargs = dict(
-        params=model.parameters(), 
+        params=params, 
         **cfg.params,
     )
     cls = OPTIMIZER_REGISTRY[cfg.name]

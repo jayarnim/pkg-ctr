@@ -1,6 +1,4 @@
-import torch
 from torch.utils.data import DataLoader
-from .dataset import CTRDataset
 
 
 def dataloader_generator(

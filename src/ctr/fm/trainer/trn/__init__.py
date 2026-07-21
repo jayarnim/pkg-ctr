@@ -1,6 +1,6 @@
 from . import (
     engine,
+    criterion,
     optimizer,
-    loss,
     builder,
 )

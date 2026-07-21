@@ -1,11 +1,11 @@
-from .loss.builder import loss_fn_builder
+from .criterion.builder import criterion_builder
 from .optimizer.builder import optimizer_builder
 from .engine import Engine
 
 
-def engine_builder(model, cfg):
+def trn_builder(model, cfg):
     kwargs = dict(
-        model=model,
+        params=model.parameters(),
         cfg=cfg.optimizer,
     )
     optimizer = optimizer_builder(**kwargs)
@@ -13,7 +13,7 @@ def engine_builder(model, cfg):
     kwargs = dict(
         cfg=cfg.loss,
     )
-    criterion = loss_fn_builder(**kwargs)
+    criterion = criterion_builder(**kwargs)
 
     kwargs = dict(
         model=model,

@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-from ...models import SUPPORTED_MODELS
+from ...const import MODELS
 
 
 @dataclass
 class ModelCfg:
-    name: SUPPORTED_MODELS
+    name: MODELS
     params: dict

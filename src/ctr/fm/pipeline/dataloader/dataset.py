@@ -3,11 +3,7 @@ from torch.utils.data import Dataset
 
 
 class CTRDataset(Dataset):
-    def __init__(
-        self,
-        X,
-        y,
-    ):
+    def __init__(self, X, y):
         self.X = torch.tensor(
             data=X.values,
             dtype=torch.float32,

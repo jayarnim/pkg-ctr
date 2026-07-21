@@ -1,6 +1,8 @@
-from IPython.display import clear_output
-import copy
+from .callbacks.manager import CallbackManager
+from .state import State
+from .records import Records
 import torch
+from torch.utils.data.dataloader import DataLoader
 
 
 # device setting
@@ -8,78 +10,49 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class Trainer(object):
-    def __init__(
-        self, 
-        engine,
-        monitor,
-        num_epochs,
-    ):
-        super().__init__()
-        self.engine = engine
-        self.monitor = monitor
+    def __init__(self, model, trn, val, callbacks, num_epochs):
+        self.model = model.to(DEVICE)
+        self.trn = trn
+        self.val = val
+        self.callbacks = CallbackManager(callbacks=callbacks)
         self.num_epochs = num_epochs
+        
+        self.state = State(num_epochs=num_epochs)
+        self.records = Records()
 
     def fit(
         self, 
-        trn_loader: torch.utils.data.dataloader.DataLoader, 
-        val_loader: torch.utils.data.dataloader.DataLoader, 
+        trn_loader: DataLoader, 
+        val_loader: DataLoader, 
     ):
-        kwargs = dict(
-            trn_loader=trn_loader, 
-            val_loader=val_loader, 
-        )
-        records = self.progressor(**kwargs)
-
-        clear_output(wait=False)
-
-        print(
-            "VALIDATION",
-            f"\tBEST SCORE: {self.monitor.best_score:.4f}",
-            f"\tBEST EPOCH: {self.monitor.best_epoch}",
-            sep="\n",
-        )
-
-        return records
-
-    def progressor(self, trn_loader, val_loader):
-        trn_log_list = []
-        val_log_list = []
+        # BEGIN ==========
+        self.callbacks.begin(self)
 
         for epoch in range(self.num_epochs):
-            # RUN ==========
-            trn_score = self.engine(trn_loader)
-            val_score = self.monitor(val_loader)
+            self.state.current_epoch = epoch + 1
 
-            # ACCUMULATE ==========
-            trn_log_list.append(trn_score)
-            val_log_list.append(val_score)
+            # EPOCH BEGIN ==========
+            self.callbacks.on_epoch_begin(self)
+            
+            # TRN ==========
+            self.callbacks.on_trn_begin(self)
+            self.trn(trn_loader, self.state)
+            self.callbacks.on_trn_end(self)
+
+            # VAL ==========
+            self.callbacks.on_val_begin(self)
+            self.val(val_loader, self.state)
+            self.callbacks.on_val_end(self)
+
+            # EPOCH END ==========
+            self.callbacks.on_epoch_end(self)
+            self.records.update(self.state)
 
             # EARLY STOPPING ==========
-            if self.monitor.should_stop==True:
+            if self.state.should_stop==True:
                 break
 
-            # PRINT ==========
-            print(
-                f'CURRENT TRN LOSS: {trn_score:.4f}',
-            )
-            print(
-                f'CURRENT VAL AUROC: {val_score:.4f}',
-                f'COUNTER: {self.monitor.counter}',
-                sep='\t\t',
-            )
+        # END ==========
+        self.callbacks.end(self)
 
-            # LOG RESET ==========
-            if (epoch + 1) % 50 == 0:
-                clear_output(wait=False)
-
-        self.model.load_state_dict(self.monitor.best_state)
-
-        return dict(
-            trn=trn_log_list,
-            val=val_log_list,
-            threshold=self.monitor.best_threshold,
-        )
-
-    @property
-    def model(self):
-        return self.engine.model
+        return self.records.get()

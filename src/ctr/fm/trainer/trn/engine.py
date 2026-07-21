@@ -11,35 +11,27 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class Engine(object):
-    def __init__(
-        self,
-        model: nn.Module,
-        optimizer,
-        criterion,
-    ):
+    def __init__(self, model, optimizer, criterion):
         super().__init__()
         self.model = model.to(DEVICE)
         self.optimizer = optimizer
         self.criterion = criterion
         self.scaler = GradScaler(device=DEVICE)
-        self.current_epoch = 0
 
-    def __call__(
-        self,
-        dataloader: torch.utils.data.dataloader.DataLoader,
-    ):
-        self.current_epoch += 1
-
+    def __call__(self, dataloader, state):
         # train
         self.model.train()
 
         # reset epoch loss
         epoch_loss = 0.0
 
+        # iterable obj
         kwargs = dict(
             iterable=dataloader, 
-            desc=f"EPOCH {self.current_epoch} TRN"
+            desc=f"EPOCH {state.current_epoch}/{state.num_epochs} TRN"
         )
+
+        # start batch loop
         for X, y in tqdm(**kwargs):
             # to gpu
             kwargs = dict(
@@ -57,7 +49,7 @@ class Engine(object):
             # accumulate loss
             epoch_loss += batch_loss.item()
 
-        return epoch_loss / len(dataloader)
+        state.trn_score = epoch_loss / len(dataloader)
 
     def batch_step(self, X, y):
         y_pred = self.model(X)

@@ -1,9 +1,10 @@
 from . import (
-    models,
+    const,
     config,
     featuremap,
     pipeline,
     trainer,
     evaluator,
     utils,
+    model,
 )

@@ -3,11 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 
-def stratified_split_builder(
-    X,
-    y,
-    cfg,
-):
+def stratified_split_builder(X, y, cfg):
     X_opt, X_tst, y_opt, y_tst = train_test_split(
         *(X, y),
         test_size=cfg.ratio["tst"],

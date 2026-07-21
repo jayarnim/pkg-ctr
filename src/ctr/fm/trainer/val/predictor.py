@@ -12,7 +12,7 @@ class Predictor(object):
         self.model = model.to(DEVICE)
 
     @torch.no_grad()
-    def __call__(self, dataloader):
+    def __call__(self, dataloader, state):
         # evalidation
         self.model.eval()
 
@@ -23,7 +23,7 @@ class Predictor(object):
         # iterable obj
         kwargs = dict(
             iterable=dataloader, 
-            desc=f"TST"
+            desc=f"EPOCH {state.current_epoch}/{state.num_epochs} VAL"
         )
 
         # start batch loop
@@ -41,7 +41,7 @@ class Predictor(object):
 
         kwargs = dict(
             data=true_list, 
-            dtype=torch.float32,
+            dtype=torch.int64,
         )
         true_tensor = torch.tensor(**kwargs).squeeze(-1)
 

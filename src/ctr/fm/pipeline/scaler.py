@@ -2,10 +2,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 
-def scaler(
-    split, 
-    cols,
-):
+def scaler(split, cols):
     X_trn, y_trn = split["trn"]
     X_val, y_val = split["val"]
     X_tst, y_tst = split["tst"]

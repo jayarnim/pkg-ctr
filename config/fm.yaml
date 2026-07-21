@@ -24,6 +24,9 @@ dataloader:
 # TRAINER PACKAGE ==========
 trainer:
   num_epochs: 100
+  patience: 5
+  delta: 0.0001
+  warmup: 0
 
 loss:
   name: bce
@@ -34,8 +37,3 @@ optimizer:
   params:
     lr: 0.0001
     weight_decay: 0.0001
-
-monitor:
-  delta: 0.0001
-  patience: 5
-  warmup: 0
